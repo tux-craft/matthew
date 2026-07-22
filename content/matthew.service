@@ -1,0 +1,10 @@
+[Unit]
+Description=Matthew takes flight.
+
+[Service]
+Type=simple
+User=quentin
+ExecStart=/home/tux-craft/matthew/matthew.py
+
+[Install]
+WantedBy=multi-user.target
