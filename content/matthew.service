@@ -1,0 +1,10 @@
+[Unit]
+Description=Matthew takes flight.
+
+[Service]
+Type=simple
+User=quentin
+ExecStart=/home/matthew/matthew.py
+
+[Install]
+WantedBy=multi-user.target
