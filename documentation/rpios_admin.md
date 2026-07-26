@@ -2,7 +2,6 @@
 
 ## Introduction
 
-Raspberry Pi OS is based on Debian.
 The following documentation could help you with simple system administration for this project.
 It's definitely not exhaustive and might not be straightforward depending of the version of  Raspberry Pi OS that you use.
 
