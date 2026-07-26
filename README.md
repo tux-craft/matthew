@@ -37,16 +37,37 @@ To assemble the hardware I used the instructions from [My Naturewatch](https://m
 > If you do not want to create this user or want another name, make sure to edit lines 6 and 7 of `matthew.service` and line 13 of `matthew.py`.
 
 1. Install the latest version of Raspberry Pi OS following the [official documentation](https://www.raspberrypi.com/software/).
+
 2. Update the system:
 ```bash
 morpheus@raspberrypi:~ $ sudo apt update
 morpheus@raspberrypi:~ $ sudo apt upgrade
 ```
+
 3. Install necessary packages for Python:
 ```bash
 morpheus@raspberrypi:~ $ sudo apt install python3-opencv python3-picamera2
 ```
+
 4. Create user tux-craft:
 ```bash
 morpheus@raspberrypi:~ $ sudo useradd -c "matthew service user" -d /home/tux-craft -m -s /usr/sbin/nologin tux-craft
+```
+
+5. Change the permissions of its home directory:
+```bash
+morpheus@raspberrypi:~ $ sudo chmod 2770 /home/tux-craft
+```
+
+6. Add your userer in the tux-craft group:
+```bash
+morpheus@raspberrypi:~ $ sudo usermod -a -G tux-craft morpheus
+```
+
+> [!NOTE]
+> At this point you need to reload the session of your current user (log out and log back in or re-SSH in a fresh terminal)
+
+7. Create a directory for Matthew:
+```bash
+morpheus@raspberrypi:~ $ mkdir /home/tux-craft/Matthew
 ```
