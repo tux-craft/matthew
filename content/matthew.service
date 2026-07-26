@@ -3,7 +3,7 @@ Description=Matthew takes flight.
 
 [Service]
 Type=simple
-User=quentin
+User=tux-craft
 ExecStart=/home/tux-craft/matthew/matthew.py
 
 [Install]
