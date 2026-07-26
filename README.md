@@ -71,3 +71,37 @@ morpheus@raspberrypi:~ $ sudo usermod -a -G tux-craft morpheus
 ```bash
 morpheus@raspberrypi:~ $ mkdir /home/tux-craft/Matthew
 ```
+
+8. Go to tux-craft home directory and download the latest content of the main branch:
+```bash
+morpheus@raspberrypi:~ $ cd /home/tux-craft
+morpheus@raspberrypi:/home/tux-craft $ wget https://github.com/tux-craft/matthew/archive/refs/heads/main.zip
+```
+
+> [!NOTE]
+> You can also do a git clone, I just find it easier this way!
+
+9. Unzip the archive:
+```bash
+morpheus@raspberrypi:/home/tux-craft $ unzip main.zip
+```
+
+10. Move the python script and the service file:
+```bash
+morpheus@raspberrypi:/home/tux-craft $ mv matthew-main/content/matthew.py Matthew/
+morpheus@raspberrypi:/home/tux-craft $ sudo mv matthew-main/content/matthew.service /etc/systemd/system/
+```
+
+11. Set the correct permissions and ownership:
+```bash
+morpheus@raspberrypi:/home/tux-craft $ sudo chown root:root /etc/systemd/system/matthew.service
+morpheus@raspberrypi:/home/tux-craft $ sudo chmod 644 /etc/systemd/system/matthew.service
+morpheus@raspberrypi:/home/tux-craft $ sudo chown -R tux-craft:tux-craft Matthew/
+morpheus@raspberrypi:/home/tux-craft $ sudo chmod 770 Matthew/matthew.py
+```
+
+12. Reload, enable and start the service:
+```bash
+morpheus@raspberrypi:/home/tux-craft $ sudo systemctl daemon-reload
+morpheus@raspberrypi:/home/tux-craft $ sudo systemctl enable --now matthew.service
+```
