@@ -209,3 +209,61 @@ This section configures the Raspberry Pi to let wireless clients access computer
 > [!NOTE]
 > If you wish to block wireless clients from accessing the Ethernet network and the internet, skip this section.
 
+To enable routing, i.e. to allow traffic to flow from one network to the other in the Raspberry Pi, create a file using the following command, with the contents below:
+
+```bash
+sudo nano /etc/sysctl.d/routed-ap.conf
+```
+
+File contents:
+
+```
+# Enable IPv4 routing
+net.ipv4.ip_forward=1
+```
+
+Enabling routing will allow hosts from network `192.168.4.0/24` to reach the LAN and the main router towards the internet. In order to allow traffic between clients on this foreign wireless network and the internet without changing the configuration of the main router, the Raspberry Pi can substitute the IP address of wireless clients with its own IP address on the LAN using a "masquerade" firewall rule.
+
+- The main router will see all outgoing traffic from wireless clients as coming from the Raspberry Pi, allowing communication with the internet.
+
+- The Raspberry Pi will receive all incoming traffic, substitute the IP addresses back, and forward traffic to the original wireless client.
+
+This process is configured by adding a single firewall rule in the Raspberry Pi:
+
+```bash
+sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+```
+
+Now save the current firewall rules for IPv4 (including the rule above) and IPv6 to be loaded at boot by the `netfilter-persistent` service:
+
+```bash
+sudo netfilter-persistent save
+```
+
+Filtering rules are saved to the directory `/etc/iptables/`. If in the future you change the configuration of your firewall, make sure to save the configuration before rebooting.
+
+##### Configure the DHCP and DNS services for the wireless network
+
+The DHCP and DNS services are provided by `dnsmasq`. The default configuration file serves as a template for all possible configuration options, whereas we only need a few. It is easier to start from an empty file.
+
+Rename the default configuration file and edit a new one:
+
+```bash
+sudo mv /etc/dnsmasq.conf /etc/dnsmasq.conf.orig
+sudo nano /etc/dnsmasq.conf
+```
+
+Add the following to the file and save it:
+
+```
+interface=wlan0 # Listening interface
+dhcp-range=192.168.4.2,192.168.4.20,255.255.255.0,24h
+                # Pool of IP addresses served via DHCP
+domain=wlan     # Local wireless DNS domain
+address=/gw.wlan/192.168.4.1
+                # Alias for this router
+```
+
+The Raspberry Pi will deliver IP addresses between `192.168.4.2` and `192.168.4.20`, with a lease time of 24 hours, to wireless DHCP clients. You should be able to reach the Raspberry Pi under the name `gw.wlan` from wireless clients.
+
+There are many more options for `dnsmasq`; see the default configuration file (`/etc/dnsmasq.conf`) or the [online documentation](https://thekelleys.org.uk/dnsmasq/doc.html) for details.
